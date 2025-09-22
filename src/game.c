@@ -1,6 +1,3 @@
-//
-// Created by pauld on 18.09.2025.
-//
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,9 +17,9 @@ void changePlayer() {
     }
 }
 
-int transformCharNum(char input) {
+int transformCharNum(const char character) {
     char result;
-    switch (input) {
+    switch (character) {
         case 'A':
         case 'a':
             result = 0;
@@ -63,44 +60,29 @@ int transformCharNum(char input) {
 }
 
 void movePiece(char origin[3], char destination[3]) {
-    char (*b)[SIZE] = getBoard();
+    const char (*b)[SIZE] = getBoard();
 
-    int originCol = transformCharNum(origin[0]);   // Spalte (a-h → 0–7)
-    int originRow = origin[1] - '1';               // Reihe (1–8 → 0–7)
-    int destinationCol = transformCharNum(destination[0]);
-    int destinationRow = destination[1] - '1';
+    const int originCol = transformCharNum(origin[0]);   // Col (a-h → 0–7)
+    const int originRow = origin[1] - '1';               // Row (1–8 → 0–7)
+    const int destinationCol = transformCharNum(destination[0]);
+    const int destinationRow = destination[1] - '1';
 
-    char pieceToMove = b[originRow][originCol];          // Zugriff: [zeile][spalte]
+    const char pieceToMove = b[originRow][originCol];
 
-    if (playerToMove == false) {
-        if (pieceToMove == 'R') {
-            isValidRookMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
-        }  else if (pieceToMove == 'B') {
-            isValidBishopMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
-        } else if (pieceToMove == 'N') {
-            isValidKnightMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
-        } else if (pieceToMove == 'P') {
-            isValidPawnMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
-        } else if (pieceToMove == 'Q') {
-            isValidQueenMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
-        } else if (pieceToMove == 'K') {
-            isValidKingMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
-        }
-    } else if (playerToMove == true) {
-        if (pieceToMove == 'r') {
-            isValidRookMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
-        }  else if (pieceToMove == 'b') {
-            isValidBishopMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
-        } else if (pieceToMove == 'n') {
-            isValidKnightMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
-        } else if (pieceToMove == 'p') {
-            isValidPawnMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
-        } else if (pieceToMove == 'q') {
-            isValidQueenMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
-        } else if (pieceToMove == 'k') {
-            isValidKingMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
-        }
+    if (pieceToMove == 'R' || pieceToMove == 'r') {
+        isValidRookMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
+    }  else if (pieceToMove == 'B' || pieceToMove == 'b') {
+        isValidBishopMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
+    } else if (pieceToMove == 'N'|| pieceToMove == 'n') {
+        isValidKnightMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
+    } else if (pieceToMove == 'P' || pieceToMove == 'p') {
+        isValidPawnMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
+    } else if (pieceToMove == 'Q' || pieceToMove == 'q') {
+        isValidQueenMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
+    } else if (pieceToMove == 'K' || pieceToMove == 'k') {
+        isValidKingMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
     }
+    changePlayer();
 }
 
 bool isGameOver() {
@@ -138,4 +120,8 @@ void getCommand() {
         system("pause");
         getCommand();
     }
+}
+
+bool getPlayerToMove() {
+    return playerToMove;
 }
