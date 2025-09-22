@@ -1,8 +1,7 @@
-//
-// Created by pauld on 18.09.2025.
-//
 #include <stdlib.h>
 #include <stdio.h>
+
+#include "game.h"
 
 #define SIZE 8
 
@@ -96,11 +95,17 @@ void printBoard() {
             }
         }
         printf("|\n  |-------------------------------|\n");
+
+    }
+    if (getPlayerToMove()) {
+            printf("Black to move!\n");
+    } else {
+            printf("White to move!\n");
     }
 }
 
-char (*getBoard())[SIZE] {  // Rückgabe: Pointer auf Array von SIZE chars
-    return board;            // board „verfällt“ automatisch zu Pointer auf erstes Array
+char (*getBoard())[SIZE] {
+    return board;
 }
 
 int* getWhitePawnState() {
