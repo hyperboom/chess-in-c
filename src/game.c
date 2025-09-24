@@ -5,9 +5,12 @@
 #include "../include/board.h"
 #include "../include/pieces.h"
 
-char input[100];
+char input[50];
 bool game = true;
 bool playerToMove = false; // False - white / True - black
+char lastMove[6]; // 0=Piece 1=OldCol 2=OldRow 3=x||null 4=NewCol 5=NewRow
+bool pieceCaptured = false;
+bool moved = false;
 
 void changePlayer() {
     if (playerToMove) {
@@ -60,6 +63,8 @@ int transformCharNum(const char character) {
 }
 
 void movePiece(char origin[3], char destination[3]) {
+    moved = false;
+    pieceCaptured = false;
     const char (*b)[SIZE] = getBoard();
 
     const int originCol = transformCharNum(origin[0]);   // Col (a-h → 0–7)
@@ -70,19 +75,36 @@ void movePiece(char origin[3], char destination[3]) {
     const char pieceToMove = b[originRow][originCol];
 
     if (pieceToMove == 'R' || pieceToMove == 'r') {
-        isValidRookMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
+        moved = isValidRookMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
     }  else if (pieceToMove == 'B' || pieceToMove == 'b') {
-        isValidBishopMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
+        moved = isValidBishopMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
     } else if (pieceToMove == 'N'|| pieceToMove == 'n') {
-        isValidKnightMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
+        moved = isValidKnightMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
     } else if (pieceToMove == 'P' || pieceToMove == 'p') {
-        isValidPawnMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
+        moved = isValidPawnMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
     } else if (pieceToMove == 'Q' || pieceToMove == 'q') {
-        isValidQueenMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
+        moved = isValidQueenMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
     } else if (pieceToMove == 'K' || pieceToMove == 'k') {
-        isValidKingMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
+        moved = isValidKingMove(originCol, originRow, destinationCol, destinationRow, pieceToMove);
     }
-    changePlayer();
+    // write last move
+    lastMove[0] = pieceToMove;
+    lastMove[1] = originCol;
+    lastMove[2] = originRow;
+    if (pieceCaptured) {
+        lastMove[3] = 'x';
+    } else {
+        lastMove[3] = ' ';
+    }
+    lastMove[4] = destinationCol;
+    lastMove[5] = destinationRow;
+
+    if (moved) {
+        changePlayer();
+    } else if (!moved) {
+        printf("Invalid move: Try again\n");
+        system("pause");
+    }
 }
 
 bool isGameOver() {
@@ -124,4 +146,8 @@ void getCommand() {
 
 bool getPlayerToMove() {
     return playerToMove;
+}
+
+char* getLastMove() {
+    return lastMove;
 }

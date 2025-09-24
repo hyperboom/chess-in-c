@@ -5,5 +5,6 @@ bool isGameOver();
 void getCommand();
 void changePlayer();
 bool getPlayerToMove();
+char (*getLastMove())[6];
 
 #endif //SCHACH_IN_C_GAME_H

@@ -18,8 +18,24 @@ int knigthMoves[8][2] = {
 
 void move(const int originCol,const int originRow,const int destinationCol,const int destinationRow,const char pieceToMove) {
     char (*b)[SIZE] = getBoard();
-    b[originRow][originCol] = '.';
-    b[destinationRow][destinationCol] = pieceToMove;
+    if ((getPlayerToMove() && isupper(pieceToMove)) || !getPlayerToMove() && islower(pieceToMove)) {
+        if (isupper(pieceToMove) && b[destinationCol][destinationRow] != '.' && islower(b[destinationCol][destinationRow])) {
+            b[originRow][originCol] = '.';
+            b[destinationRow][destinationCol] = pieceToMove;
+        } else if (isupper(pieceToMove) && b[destinationCol][destinationRow] == '.') {
+            b[originRow][originCol] = '.';
+            b[destinationRow][destinationCol] = pieceToMove;
+        } else if (islower(pieceToMove) && b[destinationCol][destinationRow] != '.' && isupper(b[destinationCol][destinationRow])) {
+            b[originRow][originCol] = '.';
+            b[destinationRow][destinationCol] = pieceToMove;
+        } else if (islower(pieceToMove) && b[destinationCol][destinationRow] == '.') {
+            b[originRow][originCol] = '.';
+            b[destinationRow][destinationCol] = pieceToMove;
+        } else {
+            printf("Invalid piece to move\n");
+            system("pause");
+        }
+    }
 }
 
 bool isValidRookMove(const int originCol, const int originRow, const int destinationCol, const int destinationRow, const char pieceToMove) {
@@ -28,6 +44,7 @@ bool isValidRookMove(const int originCol, const int originRow, const int destina
 
     if (originCol != destinationCol && originRow != destinationRow) {
         printf("Invalid rook move for '%c'\n", pieceToMove);
+        system("pause");
         return false;
     }
 
@@ -37,6 +54,7 @@ bool isValidRookMove(const int originCol, const int originRow, const int destina
         for (int r = originRow + step; r != destinationRow; r += step) {
             if (b[r][originCol] != '.') {
                 printf("Path blocked for rook '%c'\n", pieceToMove);
+                system("pause");
                 return false;
             }
         }
@@ -48,6 +66,7 @@ bool isValidRookMove(const int originCol, const int originRow, const int destina
         for (int c = originCol + step; c != destinationCol; c += step) {
             if (b[originRow][c] != '.') {
                 printf("Path blocked for rook '%c'\n", pieceToMove);
+                system("pause");
                 return false;
             }
         }
@@ -55,7 +74,6 @@ bool isValidRookMove(const int originCol, const int originRow, const int destina
 
 
     move(originCol, originRow, destinationCol, destinationRow, pieceToMove);
-    changePlayer();
     printf("Valid rook move for '%c'\n", pieceToMove);
     return true;
 }
@@ -83,6 +101,7 @@ bool isValidBishopMove(const int originCol, const int originRow, const int desti
     // 1. diagonal cases check
     if (abs(colDiff) != abs(rowDiff) || (colDiff == 0 && rowDiff == 0)) {
         printf("Invalid bishop move for '%c'\n", pieceToMove);
+        system("pause");
         return false;
     }
 
@@ -112,6 +131,8 @@ bool isValidBishopMove(const int originCol, const int originRow, const int desti
             system("pause");
             return true;
     }
+    printf("Invalid bishop move for '%c'\n", pieceToMove);
+    system("pause");
     return false;
 }
 
@@ -155,6 +176,8 @@ bool isValidPawnMove(const int originCol, const int originRow, const int destina
         }
         // En passent ?
     }
+    printf("Invalid move for '%c'\n", pieceToMove);
+    system("pause");
     return false;
 }
 
